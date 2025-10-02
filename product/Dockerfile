@@ -9,7 +9,7 @@ RUN npm ci
 COPY src ./src
 
 # ---- runtime stage ----
-FROM gcr.io/distroless/nodejs20-debian12
+FROM node:20-alpine
 
 WORKDIR /app
 
@@ -19,4 +19,4 @@ COPY --from=build /app/src ./src
 
 EXPOSE 3001
 
-CMD ["src/server.js"]
+CMD ["node", "src/server.js"]
