@@ -2,34 +2,38 @@ version: "3.9"
 services:
   consul:
     image: hashicorp/consul:1.17
-    command: agent -dev -ui -client=0.0.0.0
+    command: agent -dev -ui -client=0.0.0.0 -dns-port=8600
     ports:
       - "8500:8500"
+      - "8600:8600/udp"
     networks:
-      - micro
+      micro:
+        aliases: [consul]
 
   product-catalog:
-    image: planet/shop-product:1.0.2
+    image: planet/shop-product:1.0.3
     environment:
       - NODE_ENV=dev
       - PORT=3001
       - CONSUL_HOST=consul
-      - SERVICE_NAME=product-catalog
-      - SERVICE_ID=product-1
+    dns:
+      - 127.0.0.1
+      - 127.0.0.11
+    dns_search: ["service.consul"] # for service name resolution (product-catalog.service.consul)
     depends_on:
       - consul
     networks:
       - micro
 
-  basket-service:   # placeholder for later
-    image: planet/shop-basket:1.0.0
-    environment:
-      - PORT=3002
-      - CONSUL_HOST=consul
-      - SERVICE_NAME=basket-service
-      - SERVICE_ID=basket-1
-    networks:
-      - micro
+  # basket-service:   # placeholder for later
+  #   image: planet/shop-basket:1.0.0
+  #   environment:
+  #     - PORT=3002
+  #     - CONSUL_HOST=consul
+  #     - SERVICE_NAME=basket-service
+  #     - SERVICE_ID=basket-1
+  #   networks:
+  #     - micro
 
 networks:
   micro:
