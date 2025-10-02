@@ -3,6 +3,7 @@ const config = require('./config');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const consulClient = require('./consul');
 // const errorHandler = require('./middleware/errorHandler');
 const productRoutes = require('./routes/products');
 
@@ -23,6 +24,9 @@ app.use('/api/products', productRoutes);
 // app.use(errorHandler);
 
 const server = app.listen(config.port, () => {
+  // consulClient.register().then(console.log).catch(console.error);
+  // process.on('SIGTERM', () => consulClient.deregister().then(() => process.exit(0)));
+  // process.on('SIGINT', () => consulClient.deregister().then(() => process.exit(0)));
   console.log(`Server is running on port ${config.port}`);
 });
 
