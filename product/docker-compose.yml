@@ -11,11 +11,13 @@ services:
         aliases: [consul]
 
   product-catalog:
-    image: planet/shop-product:1.0.3
+    image: planet/shop-product:1.0.4
     environment:
       - NODE_ENV=dev
       - PORT=3001
       - CONSUL_HOST=consul
+    ports:
+      - "3001:3001"
     dns:
       - 127.0.0.1
       - 127.0.0.11
@@ -25,15 +27,29 @@ services:
     networks:
       - micro
 
-  # basket-service:   # placeholder for later
-  #   image: planet/shop-basket:1.0.0
-  #   environment:
-  #     - PORT=3002
-  #     - CONSUL_HOST=consul
-  #     - SERVICE_NAME=basket-service
-  #     - SERVICE_ID=basket-1
-  #   networks:
-  #     - micro
+  basket-service:   # placeholder for later
+    image: planet/shop-basket:1.0.3
+    environment:
+      - NODE_ENV=dev
+      - PORT=3002
+      - CONSUL_HOST=consul
+    ports:
+      - "3002:3002"
+    # dns:
+    #   - 127.0.0.1
+    #   - 127.0.0.11
+    # dns_search: ["service.consul"] # for service name resolution (product-catalog.service.consul)
+    depends_on:
+      - rabbitmq
+      - product-catalog
+    networks:
+      - micro
+  
+  rabbitmq:
+    image: rabbitmq:3.12-alpine
+    ports: ["5672:5672"]
+    networks:
+      - micro
 
 networks:
   micro:
