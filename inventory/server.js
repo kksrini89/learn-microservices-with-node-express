@@ -1,8 +1,10 @@
 const express = require('express');
 const Consul = require('consul');
 const amqp = require('amqplib');
+const morgan = require('morgan');
 
 const app = express();
+app.use(morgan('combined'));
 // app.use(express.json());
 
 const PORT = process.env.PORT || 3003;

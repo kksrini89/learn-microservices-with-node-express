@@ -11,7 +11,7 @@ services:
         aliases: [consul]
 
   product-catalog:
-    image: planet/shop-product:1.0.4
+    image: planet/shop-product:1.0.7
     environment:
       - NODE_ENV=dev
       - PORT=3001
@@ -28,25 +28,26 @@ services:
       - micro
 
   basket-service:   # placeholder for later
-    image: planet/shop-basket:1.0.4
+    image: planet/shop-basket:1.0.7
     environment:
       - NODE_ENV=dev
       - PORT=3002
       - CONSUL_HOST=consul
     ports:
       - "3002:3002"
-    # dns:
-    #   - 127.0.0.1
-    #   - 127.0.0.11
-    # dns_search: ["service.consul"] # for service name resolution (product-catalog.service.consul)
+    dns:
+      - 127.0.0.1
+      - 127.0.0.11
+    dns_search: ["service.consul"] # for service name resolution (product-catalog.service.consul)
     depends_on:
+      - consul
       - rabbitmq
       - product-catalog
     networks:
       - micro
 
   inventory-service:
-    image: planet/shop-inventory:1.0.4
+    image: planet/shop-inventory:1.0.7
     environment:
       - NODE_ENV=dev
       - PORT=3003
